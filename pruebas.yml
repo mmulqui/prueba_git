@@ -1,0 +1,38 @@
+# .github/workflows/pruebas.yml
+#
+# Este workflow se ejecuta automáticamente cada vez que
+# se hace un "git push" o se abre un Pull Request.
+
+name: Ejecutar pruebas PHP
+
+# ¿Cuándo se activa este workflow?
+on:
+  push:                     # Al hacer git push a cualquier rama
+    branches: [ main ]
+  pull_request:             # Al abrir o actualizar un Pull Request
+    branches: [ main ]
+
+# Pasos que se ejecutan en orden
+jobs:
+  pruebas:
+    name: Pruebas con PHPUnit
+    runs-on: ubuntu-latest  # GitHub nos da una máquina virtual Ubuntu
+
+    steps:
+      # Paso 1: Descargar el código del repositorio
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      # Paso 2: Instalar PHP en la máquina virtual
+      - name: Instalar PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      # Paso 3: Instalar dependencias con Composer
+      - name: Instalar dependencias
+        run: composer install --no-interaction
+
+      # Paso 4: Ejecutar las pruebas
+      - name: Ejecutar pruebas PHPUnit
+        run: ./vendor/bin/phpunit tests/
